@@ -89,7 +89,7 @@ public class OrderController {
 
 
 
-        @RequestMapping("pay.do")
+    @RequestMapping("pay.do")
     @ResponseBody
     public ServerResponse pay(HttpSession session, Long orderNo, HttpServletRequest request){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
@@ -120,7 +120,7 @@ public class OrderController {
         // 验证回调正确性、避免重复发送
         params.remove("sign_type");
         try {
-            boolean alipayRSACheckV2 = AlipaySignature.rsaCheckV2(params, Configs.getPublicKey(), "utf-8", Configs.getSignType());
+            boolean alipayRSACheckV2 = AlipaySignature.rsaCheckV2(params, Configs.getAlipayPublicKey(), "utf-8", Configs.getSignType());
             if (!alipayRSACheckV2) {
                 return ServerResponse.createByErrorMessage("非法请求");
             }
