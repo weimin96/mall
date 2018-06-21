@@ -139,6 +139,7 @@ public class ProductManageController {
 //                "msg":"",
 //                "file_path":""
 //          }
+
         Map resultMap = Maps.newHashMap();
         User user = (User) session.getAttribute(Const.CURRENT_USER);
         if (user == null) {
