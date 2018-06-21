@@ -130,7 +130,7 @@ public class ProductManageController {
         }
     }
 
-    @RequestMapping("richText_img_upload.do")
+    @RequestMapping("richtext_img_upload.do")
     @ResponseBody
     public Map richTextImgUpload(HttpSession session, @RequestParam(value = "upload_file", required = false) MultipartFile file, HttpServletRequest request,HttpServletResponse response) {
         // simditor富文本返回要求
