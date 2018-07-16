@@ -184,37 +184,38 @@ public class ProductServiceImpl implements IProductService {
         if (StringUtils.isBlank(keyword) && categoryId == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
-        List<Integer> categoryIdList=new ArrayList<>();
+        List<Integer> categoryIdList = new ArrayList<>();
         if (categoryId != null) {
+            // 查找分类
             Category category = categoryMapper.selectByPrimaryKey(categoryId);
             // 没有该分类并且没有关键字，返回一个空的结果集
             if (category == null && StringUtils.isBlank(keyword)) {
-                PageHelper.startPage(pageNum,pageSize);
-                List<ProductListVo> productListVoList=Lists.newArrayList();
-                PageInfo pageInfo=new PageInfo(productListVoList);
+                PageHelper.startPage(pageNum, pageSize);
+                List<ProductListVo> productListVoList = Lists.newArrayList();
+                PageInfo pageInfo = new PageInfo(productListVoList);
                 return ServerResponse.createBySuccess(pageInfo);
             }
             // 存放本结点的id和孩子结点id
-            categoryIdList= iCategoryService.selectCategoryAndChildById(categoryId).getData();
+            categoryIdList = iCategoryService.selectCategoryAndChildById(categoryId).getData();
         }
-        if (StringUtils.isNotBlank(keyword)){
-            keyword=new StringBuilder().append("%").append(keyword).append("%").toString();
+        if (StringUtils.isNotBlank(keyword)) {
+            keyword = "%" + keyword + "%";
         }
-        PageHelper.startPage(pageNum,pageSize);
+        PageHelper.startPage(pageNum, pageSize);
         // 排序处理
-        if (StringUtils.isNotBlank(orderBy)){
-            if (Const.ProductListOrderBy.PRICE_ASC_DESC.contains(orderBy)){
-                String[] orderByArray=orderBy.split("_");
-                PageHelper.orderBy(orderByArray[0]+" "+orderByArray[1]);
+        if (StringUtils.isNotBlank(orderBy)) {
+            if (Const.ProductListOrderBy.PRICE_ASC_DESC.contains(orderBy)) {
+                String[] orderByArray = orderBy.split("_");
+                PageHelper.orderBy(orderByArray[0] + " " + orderByArray[1]);
             }
         }
-        List<Product> productList=productMapper.selectByNameAndCategoryIds(StringUtils.isBlank(keyword)?null:keyword,categoryIdList.size()==0?null:categoryIdList);
-        List<ProductListVo> productListVoList=Lists.newArrayList();
-        for (Product product:productList){
-            ProductListVo productListVo=assembleProductListVo(product);
+        List<Product> productList = productMapper.selectByNameAndCategoryIds(StringUtils.isBlank(keyword) ? null : keyword, categoryIdList.size() == 0 ? null : categoryIdList);
+        List<ProductListVo> productListVoList = Lists.newArrayList();
+        for (Product product : productList) {
+            ProductListVo productListVo = assembleProductListVo(product);
             productListVoList.add(productListVo);
         }
-        PageInfo pageInfo=new PageInfo(productList);
+        PageInfo pageInfo = new PageInfo(productList);
         pageInfo.setList(productListVoList);
         return ServerResponse.createBySuccess(pageInfo);
     }

@@ -18,24 +18,29 @@ public class TokenCache {
     public static final String TOKEN_PREFIX = "token_";
     public static Logger logger=LoggerFactory.getLogger(TokenCache.class);
 
-    private static LoadingCache<String,String> localCache = CacheBuilder.newBuilder()
-            .initialCapacity(1000)//初始化容量
-            .maximumSize(10000)//缓存的最大容量
-            .expireAfterAccess(12,TimeUnit.HOURS)//缓存有效期
-            .build(new CacheLoader<String, String>() {
-                //默认的数据加载实现当调用get取值时，如果key没有对应的值，就执行这个方法
-                @Override
-                public String load(String s) throws Exception {
-                    return "null";
-                }
-            });
+    private static LoadingCache<String,String> localCache;
+
+    static {
+        localCache = CacheBuilder.newBuilder()
+                .initialCapacity(1000)//初始化容量
+                .maximumSize(10000)//缓存的最大容量
+                .expireAfterAccess(12, TimeUnit.HOURS)//缓存有效期
+                .build(new CacheLoader<String, String>() {
+                    //默认的数据加载实现当调用get取值时，如果key没有对应的值，就执行这个方法
+                    @Override
+                    public String load(String s) {
+                        return "null";
+                    }
+                });
+    }
+
 
     public static void setKey(String key,String value){
         localCache.put(key,value);
     }
 
     public static String getKey(String key){
-        String value = null;
+        String value;
         try {
             value=localCache.get(key);
             if ("null".equals(value)){

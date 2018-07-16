@@ -17,14 +17,16 @@ import org.springframework.util.CollectionUtils;
 import java.util.List;
 import java.util.Set;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Created by Oreo
  * on 2018/4/13
  */
 @Service("ICategoryService")
+@Slf4j
 public class CategoryServiceImpl implements ICategoryService {
 
-    private Logger logger = LoggerFactory.getLogger(CategoryServiceImpl.class);
     @Autowired
     private CategoryMapper categoryMapper;
 
@@ -62,7 +64,7 @@ public class CategoryServiceImpl implements ICategoryService {
     public ServerResponse<List<Category>> getChildrenParallelCategory(Integer categoryId) {
         List<Category> categoryList = categoryMapper.selectCategoryChildrenByParentId(categoryId);
         if (CollectionUtils.isEmpty(categoryList)) {
-            logger.info("当前分类的子分类未找到");
+            log.info("当前分类的子分类未找到");
         }
         return ServerResponse.createBySuccess(categoryList);
     }
